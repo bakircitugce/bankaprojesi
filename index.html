@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Banka Mutabakatı Agent Projesi — Sprint Yol Haritası</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0A0C1F;
+    --bg-panel: #0A0C1F;
+    --bg-sunken: #12142E;
+    --bg-sidebar: #0D0F26;
+    --ink: #F1F2F7;
+    --ink-soft: #B7B9D6;
+    --ink-faint: #7A7EA3;
+    --line: #24273F;
+    --line-strong: #383C63;
+    --accent: #FFFFFF;
+    --shadow: 0 1px 3px rgba(0,0,0,0.4);
+    --radius: 2px;
+    --serif: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+    --sans: 'IBM Plex Sans', -apple-system, 'Segoe UI', Arial, sans-serif;
+    --mono: 'IBM Plex Mono', 'SFMono-Regular', Consolas, monospace;
+  }
+
+  :root[data-theme="light"] {
+    --bg: #FFFFFF;
+    --bg-panel: #FFFFFF;
+    --bg-sunken: #F4F4F4;
+    --bg-sidebar: #FAFAFA;
+    --ink: #111111;
+    --ink-soft: #4A4A4A;
+    --ink-faint: #8A8A8A;
+    --line: #DDDDDD;
+    --line-strong: #B5B5B5;
+    --accent: #111111;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; height:100%; }
+  body {
+    background:
+      radial-gradient(ellipse 900px 500px at 20% 100%, rgba(80,50,160,0.28) 0%, transparent 60%),
+      radial-gradient(ellipse 700px 500px at 80% 90%, rgba(40,70,150,0.20) 0%, transparent 60%),
+      linear-gradient(180deg, #0A0C1F 0%, #0E1030 55%, #12112c 100%);
+    background-attachment: fixed;
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---------- Header ---------- */
+  header.top {
+    border-bottom: 1px solid var(--line);
+    padding: 30px 40px 26px;
+    display:flex; align-items:flex-end; justify-content:space-between; gap:24px;
+    flex-wrap: wrap;
+    position: relative;
+  }
+  header.top::before {
+    content: "";
+    position: absolute; top:0; left:0; right:0; height:2px;
+    background: var(--accent);
+  }
+  header.top .htext { display:flex; flex-direction:column; gap:8px; }
+  header.top .eyebrow {
+    font-family: var(--mono); font-size: 10.5px; color: var(--ink-faint);
+    letter-spacing: 0.14em;
+  }
+  header.top h1 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 25px;
+    margin: 0;
+    letter-spacing: -0.005em;
+    color: var(--accent);
+  }
+  header.top .sub {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    color: var(--ink-faint);
+    letter-spacing: 0.1em;
+    border: 1px solid var(--line-strong);
+    padding: 6px 12px;
+    white-space: nowrap;
+  }
+
+  /* ---------- Layout ---------- */
+  .layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    min-height: calc(100vh - 68px);
+  }
+  @media (max-width: 860px) {
+    .layout { grid-template-columns: 1fr; }
+  }
+
+  /* ---------- Sidebar ---------- */
+  aside.sidebar {
+    background: var(--bg-sidebar);
+    border-right: 1px solid var(--line);
+    padding: 30px 0;
+  }
+  @media (max-width: 860px) {
+    aside.sidebar { border-right:none; border-bottom: 1px solid var(--line); }
+  }
+  .sidebar-label {
+    font-family: var(--mono); font-size: 10.5px; color: var(--ink-faint);
+    letter-spacing: 0.14em; padding: 0 28px 18px;
+  }
+  .sidebar-list { list-style:none; margin:0; padding:0; }
+  .sidebar-list li { border-top: 1px solid var(--line); }
+  .sidebar-list li:first-child { border-top: none; }
+  .sidebar-list button {
+    width: 100%; text-align:left; background:none; border:none; cursor:pointer;
+    display:flex; align-items:center; gap:16px;
+    padding: 16px 28px;
+    border-left: 2px solid transparent;
+    font-family: var(--sans); color: var(--ink-soft);
+    transition: background .12s ease, border-color .12s ease, color .12s ease;
+  }
+  .sidebar-list button:hover { background: var(--bg-sunken); color: var(--ink); }
+  .sidebar-list button.active {
+    border-left: 2px solid var(--accent);
+    background: var(--bg-sunken);
+    color: var(--ink);
+  }
+  .sb-num {
+    font-family: var(--serif); font-size: 17px; font-weight: 600; color: var(--line-strong);
+    flex: 0 0 26px; line-height: 1;
+    transition: color .12s ease;
+  }
+  .sidebar-list button.active .sb-num { color: var(--accent); }
+  .sb-text { display:flex; flex-direction:column; gap:4px; min-width:0; }
+  .sb-tag { font-family: var(--mono); font-size: 9.5px; color: var(--ink-faint); letter-spacing: 0.08em; }
+  .sb-title { font-size: 13px; line-height:1.4; }
+
+  /* ---------- Main panel ---------- */
+  main.panel { padding: 52px 60px 90px; max-width: 760px; }
+  @media (max-width: 640px) { main.panel { padding: 34px 22px 60px; } }
+
+  .panel-crumb {
+    font-family: var(--mono); font-size: 10.5px; color: var(--ink-faint);
+    letter-spacing: 0.1em; margin-bottom: 18px;
+  }
+  .panel-crumb span { color: var(--ink-soft); }
+  .panel-head { margin-bottom: 36px; padding-bottom: 28px; border-bottom: 1px solid var(--line); }
+  .panel-tag {
+    display:inline-block; font-family: var(--mono); font-size: 10.5px; color: var(--ink-soft);
+    letter-spacing: 0.08em; margin-bottom: 16px;
+    border: 1px solid var(--line-strong); padding: 4px 10px;
+  }
+  .panel-head h2 {
+    font-family: var(--serif); font-weight:600; font-size: 30px; margin: 0 0 20px; line-height:1.25;
+    color: var(--accent); max-width: 24ch;
+  }
+  .panel-goal {
+    font-family: var(--serif); color: var(--ink-soft); font-size: 16px; max-width: 58ch; margin:0;
+    line-height: 1.65; border-left: 2px solid var(--line-strong); padding-left: 18px;
+  }
+
+  .section-label {
+    display:flex; align-items:center; justify-content:space-between;
+    font-family: var(--mono); font-size: 10.5px; color: var(--ink-faint);
+    letter-spacing: 0.1em; margin: 0 0 16px;
+  }
+  .section-label .count { color: var(--ink-faint); }
+
+  .task-list { list-style:none; margin:0 0 44px; padding:0; }
+  .task-list li {
+    display:flex; gap:18px; align-items:flex-start; padding: 16px 4px; border-top: 1px solid var(--line);
+    transition: background .12s ease;
+  }
+  .task-list li:first-child { border-top: none; }
+  .task-list li:hover { background: var(--bg-sunken); }
+  .task-num {
+    font-family: var(--mono); font-size: 11px; color: var(--ink-faint);
+    flex: 0 0 28px; height: 28px; display:flex; align-items:center; justify-content:center;
+    border: 1px solid var(--line-strong);
+  }
+  .task-text { font-size: 15px; color: var(--ink); padding-top: 4px; }
+
+  /* status chips — monochrome, differentiated by border style */
+  .chip {
+    display:inline-block; font-family: var(--mono); font-size: 11px;
+    padding: 1px 8px; border-radius: 2px; margin: 0 2px;
+    border: 1px solid var(--ink);
+    color: var(--ink);
+  }
+  .chip.warn { border-style: dashed; }
+  .chip.miss { border-style: dotted; color: var(--ink-soft); }
+
+  /* ---------- Notes / tickets ---------- */
+  .notes-box {
+    background: var(--bg-sunken);
+    border: 1px solid var(--line);
+    border-top: 2px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 24px 26px 26px;
+  }
+  .notes-box .notes-head {
+    display:flex; align-items:baseline; justify-content:space-between; gap:12px;
+    margin-bottom: 16px;
+  }
+  .notes-box .notes-title {
+    font-family: var(--mono); font-size: 10.5px; color: var(--ink-soft); letter-spacing:0.1em;
+  }
+  .notes-box .notes-count {
+    font-family: var(--mono); font-size: 10.5px; color: var(--ink-faint);
+  }
+  .note-form { display:flex; flex-direction:column; gap:8px; }
+  .note-form textarea {
+    width:100%; min-height: 60px; resize: vertical;
+    font-family: var(--sans); font-size: 14px; color: var(--ink);
+    background: var(--bg-panel);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    padding: 10px 12px;
+  }
+  .note-form textarea:focus { outline: 1px solid var(--ink); outline-offset: 1px; }
+  .note-form-row { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  .note-form input[type="text"] {
+    font-family: var(--sans); font-size: 13px; color: var(--ink);
+    background: var(--bg-panel); border: 1px solid var(--line-strong);
+    border-radius: var(--radius); padding: 8px 10px; width: 200px; max-width: 100%;
+  }
+  .note-form button {
+    font-family: var(--mono); font-size: 12px; font-weight:500; letter-spacing: 0.05em;
+    background: transparent; color: var(--ink); border: 1px solid var(--ink);
+    border-radius: var(--radius); padding: 9px 18px; cursor:pointer;
+    transition: background .12s ease, color .12s ease;
+  }
+  .note-form button:hover { background: var(--ink); color: var(--bg); }
+
+  .note-item {
+    margin-top: 12px; padding: 12px 14px;
+    background: var(--bg-panel);
+    border: 1px solid var(--line);
+    border-left: 2px solid var(--ink);
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+  .note-item .note-meta {
+    display:flex; justify-content:space-between; gap:10px;
+    font-family: var(--mono); font-size: 11px; color: var(--ink-faint);
+    margin-bottom: 6px;
+  }
+  .note-item .note-text { font-size: 14px; color: var(--ink); white-space: pre-wrap; }
+  .note-item .note-del {
+    background:none; border:none; cursor:pointer;
+    color: var(--ink-faint); font-family: var(--mono); font-size: 11px;
+    text-decoration: underline; padding:0;
+  }
+  .note-item .note-del:hover { color: var(--ink); }
+  .note-empty { font-size: 13px; color: var(--ink-faint); font-style: italic; margin-top: 10px; }
+
+  ::-webkit-scrollbar { height: 6px; width: 6px; }
+  ::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="htext">
+    <span class="eyebrow">SÜREÇ OTOMASYONU YOL HARİTASI</span>
+    <h1>Banka Mutabakatı Agent Projesi</h1>
+  </div>
+  <span class="sub" id="progressLabel"></span>
+</header>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-label">SPRINTLER</div>
+    <ul class="sidebar-list" id="sidebarList"></ul>
+  </aside>
+  <main class="panel" id="panel"></main>
+</div>
+
+<script>
+(function(){
+
+  var SPRINTS = [
+    {
+      id: "sprint-1",
+      tag: "SPRINT 1 · EXCEL VBA",
+      title: "T-Base Veri Çekme Modülü (Günlük / Vadeli / Kredili / FX)",
+      goal: "Excel VBA ile T-Base üzerinden günlük, vadeli, kredili ve FX işlemlerinin otomatik çekilmesi.",
+      tasks: [
+        "Günlük işlemleri T-Base'den çeken VBA modülünün yazılması.",
+        "Vadeli işlemleri T-Base'den çeken VBA modülünün yazılması.",
+        "Kredili işlemleri T-Base'den çeken VBA modülünün yazılması.",
+        "FX işlemlerini T-Base'den çeken VBA modülünün yazılması.",
+        "Çekilen verilerin ana mutabakat Excel dosyasında ilgili sheetlere (Günlük, Vadeli, Kredili, FX) otomatik yerleştirilmesi.",
+        "T-Base bağlantısı koptuğunda veya veri çekilemediğinde hata/log mekanizmasının kurulması.",
+        "Farklı gün ve banka senaryolarıyla modülün test edilmesi."
+      ]
+    },
+    {
+      id: "sprint-2",
+      tag: "SPRINT 2 · POWER AUTOMATE",
+      title: "Ekstre Toplama Otomasyonu",
+      goal: "Günlük sheetinde yer alan IBAN'lara ait ekstrelerin Power Automate ile mailden toplanıp klasöre kaydedilmesi.",
+      tasks: [
+        "Günlük sheetindeki IBAN listesinin Power Automate flow'unun okuyabileceği şekilde tanımlanması.",
+        "İlgili IBAN'lara ait ekstrelerin geldiği mailleri izleyen Power Automate flow'unun kurulması.",
+        "Gelen maillerin banka/IBAN bazında filtrelenmesi.",
+        "Mail eklerindeki ekstre dosyalarının ayıklanarak belirlenen klasöre kaydedilmesi.",
+        "Kaydedilen dosyalar için banka/IBAN/tarih içeren standart dosya adlandırmasının uygulanması.",
+        "İlgili mail gelmediğinde veya ekte ekstre bulunmadığında flow'un istisna adımlarının tanımlanması.",
+        "Flow'un birden fazla banka ve gün için test edilmesi."
+      ]
+    },
+    {
+      id: "sprint-3",
+      tag: "SPRINT 3 · BELGE OTOMASYONU",
+      title: "Vadeli / FX / Kredili Talimat Belgelerinin Otomatik Alınması",
+      goal: "Vadeli, FX ve kredili işlemleri için gerekli talimat belgelerinin otomatik çekilip ana mutabakat Excel'ine yerleştirilmesi.",
+      tasks: [
+        "Vadeli, FX ve kredili işlemlerine ait talimat belgelerinin ilgili dosya konumundan otomatik çekilmesi için otomasyonun kurulması.",
+        "Çekilen belgelerin ana mutabakat Excel dosyasının Vadeli, FX ve Kredili sheetlerine yerleştirilmesi.",
+        "Hangi belgenin hangi işleme karşılık geldiğinin eşleştirme mantığının tanımlanması.",
+        "Belge bulunamadığı durumların (sonraki sprintte otomatik mail ile bağlanacak şekilde) işaretlenmesi.",
+        "Farklı işlem tipleri (vadeli, FX, kredili) için test edilmesi."
+      ]
+    },
+    {
+      id: "sprint-4",
+      tag: "SPRINT 4 · VERİ AKTARIMI",
+      title: "Toplanan Ekstrelerin Ana Mutabakat Excel'ine İşlenmesi",
+      goal: "Power Automate ile toplanan ekstre verilerinin ana mutabakat Excel dosyasına aktarılması.",
+      tasks: [
+        "Power Automate ile toplanan ekstre dosyalarının formatının standardize edilmesi.",
+        "Ekstre klasöründeki dosyaların otomatik olarak okunması.",
+        "Okunan ekstre verilerinin ana mutabakat Excel dosyasına, ilgili IBAN/banka satırlarıyla eşleştirilerek aktarılması.",
+        "Aktarım sırasında IBAN/banka eşleştirmesinin doğruluğunun kontrol edilmesi.",
+        "Aktarım sürecinin farklı banka ve gün kombinasyonlarıyla test edilmesi."
+      ]
+    },
+    {
+      id: "sprint-5",
+      tag: "SPRINT 5 · COPILOT AGENT",
+      title: "Günlük Mutabakat Kontrolü (Copilot Agent)",
+      goal: "Her banka için özel tanımlanmış Copilot Agent promptları ile T-Base kapanış bakiyesi, SAP kapanış bakiyesi ve ekstre dip bakiyesinin karşılaştırılması.",
+      tasks: [
+        "Her banka için ayrı, özel tanımlanmış Copilot Agent promptlarının oluşturulması.",
+        "Agent'in üç değeri karşılaştırma mantığının tanımlanması: T-Base end amount, SAP end amount, toplanan ekstrenin dip (kapanış) bakiyesi.",
+        "Üç değer birbiriyle uyumluysa satıra <span class=\"chip\">OK</span> notunun otomatik yazdırılması.",
+        "Değerler arasında uyumsuzluk varsa <span class=\"chip warn\">Kontrol Et</span> notunun otomatik yazdırılması.",
+        "İlgili IBAN'a ait ekstre toplanamamışsa <span class=\"chip miss\">Ekstre Eksik</span> notunun otomatik yazdırılması.",
+        "Kontrol sonuçlarının ana mutabakat Excel dosyasındaki ilgili satır/sheete işlenmesi.",
+        "Farklı banka ve uyumsuzluk senaryolarıyla agent çıktısının test edilmesi."
+      ]
+    },
+    {
+      id: "sprint-6",
+      tag: "SPRINT 6 · COPILOT AGENT",
+      title: "Vadeli / FX / Kredili İşlemler için Talimat Karşılaştırması",
+      goal: "Vadeli sheetindeki T-Base rakamlarının talimatla, FX ve kredili işlemlerin de aynı mantıkla karşılaştırılması.",
+      tasks: [
+        "Vadeli sheetinde T-Base vadeli rakamlarının ilgili talimat belgesiyle karşılaştırılması için Copilot Agent promptunun oluşturulması.",
+        "FX işlemleri için aynı karşılaştırma mantığının FX sheetine uygulanması.",
+        "Kredili işlemler için aynı karşılaştırma mantığının kredili sheetine uygulanması.",
+        "Bu sheetler için de <span class=\"chip\">OK</span> / <span class=\"chip warn\">Kontrol Et</span> / <span class=\"chip miss\">Belge Eksik</span> not mantığının uygulanması.",
+        "Kontrol sonuçlarının ana mutabakat Excel dosyasına işlenmesi.",
+        "Vadeli, FX ve kredili sheetlerinin birlikte uçtan uca test edilmesi."
+      ]
+    },
+    {
+      id: "sprint-7",
+      tag: "SPRINT 7 · VBA MAİL OTOMASYONU",
+      title: "Eksik Talimatların Otomatik Sorgulanması",
+      goal: "Vadeli, FX ve kredili işlemlere ait talimat ortak dosyada bulunamazsa Excel VBA'nın otomatik olarak ilgili kişiye mail atması.",
+      tasks: [
+        "Vadeli, FX ve kredili işlemler için talimatın ortak dosyada/konumda olup olmadığını kontrol eden VBA mantığının yazılması.",
+        "Talimat bulunamadığı durumda, önceden tanımlanmış alıcıya otomatik mail gönderen VBA kodunun yazılması.",
+        "Mail içeriğinin standardize edilmesi (işlem tipi, tarih, banka ve eksik talimat bilgisini içerecek şekilde).",
+        "Gönderilen sorgulama maillerinin takip edilebilmesi için loglama yapılması.",
+        "Vadeli, FX ve kredili senaryolarının her biri için mail tetikleme akışının test edilmesi."
+      ]
+    },
+    {
+      id: "sprint-8",
+      tag: "SPRINT 8 · DEVREYE ALMA",
+      title: "Uçtan Uca Entegrasyon, Test ve Canlıya Alma",
+      goal: "VBA, Power Automate, Copilot Agent ve mail otomasyonu bileşenlerinin tek akış halinde birlikte çalıştığının doğrulanması ve sürecin devreye alınması.",
+      tasks: [
+        "Tüm modüllerin (VBA veri çekme, Power Automate ekstre toplama, belge otomasyonu, Copilot Agent kontrolü, mail otomasyonu) uçtan uca birlikte test edilmesi.",
+        "Gerçek veriyle pilot banka(lar) üzerinden test yapılması.",
+        "OK / Kontrol Et / Ekstre Eksik / Belge Eksik senaryolarının uçtan uca doğrulanması.",
+        "Kullanım kılavuzu, akış şeması ve sorumluluk matrisinin dokümante edilmesi.",
+        "Sürecin canlıya alınması ve süreç sahiplerine devri."
+      ]
+    }
+  ];
+
+  var sidebarList = document.getElementById('sidebarList');
+  var panel = document.getElementById('panel');
+  var progressLabel = document.getElementById('progressLabel');
+  var activeIndex = 0;
+
+  progressLabel.textContent = SPRINTS.length + ' SPRINT';
+
+  SPRINTS.forEach(function(sp, idx){
+    var li = document.createElement('li');
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.dataset.idx = idx;
+    btn.innerHTML =
+      '<span class="sb-num">' + String(idx + 1).padStart(2,'0') + '</span>' +
+      '<span class="sb-text"><span class="sb-tag">' + sp.tag + '</span><span class="sb-title">' + sp.title + '</span></span>';
+    btn.addEventListener('click', function(){ selectSprint(idx); });
+    li.appendChild(btn);
+    sidebarList.appendChild(li);
+  });
+
+  var currentUnsub = null;
+
+  function storageAvailable(){
+    try {
+      var t = '__storage_test__';
+      localStorage.setItem(t, t);
+      localStorage.removeItem(t);
+      return true;
+    } catch(e){ return false; }
+  }
+  var STORAGE_OK = storageAvailable();
+
+  function fmtDate(ts){
+    var d = new Date(ts);
+    var pad = function(n){ return (n<10?'0':'')+n; };
+    return pad(d.getDate())+'.'+pad(d.getMonth()+1)+'.'+d.getFullYear()+' '+pad(d.getHours())+':'+pad(d.getMinutes());
+  }
+
+  function renderNotes(sp, container){
+    var storeKey = 'mutabakat-agent-notes:' + sp.id;
+
+    var box = document.createElement('div');
+    box.className = 'notes-box';
+    box.innerHTML =
+      '<div class="notes-head"><span class="notes-title">GELİŞTİRME / DEĞİŞİKLİK TALEBİ EKLE</span><span class="notes-count" data-count></span></div>' +
+      (STORAGE_OK ? '' : '<p style="font-family:var(--mono);font-size:11px;color:#E3A6A6;border:1px solid #6B3232;background:rgba(180,60,60,0.08);padding:10px 12px;margin:0 0 14px;">Bu görünümde tarayıcı depolaması kapalı olduğu için notlar kaydedilemiyor. Dosyayı bilgisayarınıza indirip doğrudan bir tarayıcıda (veya bir web sunucusunda) açtığınızdan emin olun.</p>') +
+      '<div class="note-form">' +
+        '<textarea placeholder="Bu sprintle ilgili geliştirme veya değişiklik talebinizi yazın..." data-note-input' + (STORAGE_OK ? '' : ' disabled') + '></textarea>' +
+        '<div class="note-form-row">' +
+          '<input type="text" placeholder="Adınız (opsiyonel)" data-note-author' + (STORAGE_OK ? '' : ' disabled') + '>' +
+          '<button type="button" data-note-add' + (STORAGE_OK ? '' : ' disabled') + '>Talebi Kaydet</button>' +
+        '</div>' +
+      '</div>' +
+      '<div data-note-list></div>' +
+      '<div class="note-empty" data-note-empty>Henüz talep eklenmedi.</div>';
+    container.appendChild(box);
+
+    var listEl = box.querySelector('[data-note-list]');
+    var emptyEl = box.querySelector('[data-note-empty]');
+    var countEl = box.querySelector('[data-count]');
+    var inputEl = box.querySelector('[data-note-input]');
+    var authorEl = box.querySelector('[data-note-author]');
+    var addBtn = box.querySelector('[data-note-add]');
+
+    function loadNotes(){
+      try {
+        var raw = localStorage.getItem(storeKey);
+        return raw ? JSON.parse(raw) : [];
+      } catch(e){ return []; }
+    }
+    function saveNotes(notes){
+      try { localStorage.setItem(storeKey, JSON.stringify(notes)); } catch(e){}
+    }
+    function render(){
+      var notes = loadNotes();
+      listEl.innerHTML = '';
+      countEl.textContent = notes.length ? (notes.length + ' talep') : '';
+      emptyEl.style.display = notes.length ? 'none' : 'block';
+      notes.slice().reverse().forEach(function(n){
+        var item = document.createElement('div');
+        item.className = 'note-item';
+        var authorLabel = n.author ? n.author : 'İsimsiz';
+        item.innerHTML =
+          '<div class="note-meta"><span>' + authorLabel + ' · ' + fmtDate(n.ts) + '</span><button type="button" class="note-del">Sil</button></div>' +
+          '<div class="note-text"></div>';
+        item.querySelector('.note-text').textContent = n.text;
+        item.querySelector('.note-del').addEventListener('click', function(){
+          var current = loadNotes().filter(function(x){ return x.id !== n.id; });
+          saveNotes(current);
+          render();
+        });
+        listEl.appendChild(item);
+      });
+    }
+    addBtn.addEventListener('click', function(){
+      if (!STORAGE_OK) return;
+      var text = inputEl.value.trim();
+      if (!text) { inputEl.focus(); return; }
+      var notes = loadNotes();
+      notes.push({
+        id: Date.now() + '-' + Math.random().toString(36).slice(2,8),
+        text: text,
+        author: authorEl.value.trim(),
+        ts: Date.now()
+      });
+      saveNotes(notes);
+      inputEl.value = '';
+      render();
+    });
+    render();
+  }
+
+  function selectSprint(idx){
+    activeIndex = idx;
+    var sp = SPRINTS[idx];
+
+    Array.prototype.forEach.call(sidebarList.querySelectorAll('button'), function(b){
+      b.classList.toggle('active', parseInt(b.dataset.idx,10) === idx);
+    });
+
+    panel.innerHTML = '';
+
+    var crumb = document.createElement('div');
+    crumb.className = 'panel-crumb';
+    crumb.innerHTML = 'MUTABAKAT AGENT PROJESİ &nbsp;/&nbsp; <span>SPRINT ' + String(idx + 1).padStart(2,'0') + ' — ' + SPRINTS.length.toString().padStart(2,'0') + '</span>';
+    panel.appendChild(crumb);
+
+    var head = document.createElement('div');
+    head.className = 'panel-head';
+    head.innerHTML =
+      '<span class="panel-tag">' + sp.tag + '</span>' +
+      '<h2>' + sp.title + '</h2>' +
+      '<p class="panel-goal">' + sp.goal + '</p>';
+    panel.appendChild(head);
+
+    var taskLabel = document.createElement('div');
+    taskLabel.className = 'section-label';
+    taskLabel.innerHTML = '<span>GÖREVLER</span><span class="count">' + sp.tasks.length + ' ADIM</span>';
+    panel.appendChild(taskLabel);
+
+    var ul = document.createElement('ul');
+    ul.className = 'task-list';
+    sp.tasks.forEach(function(t, i){
+      var li = document.createElement('li');
+      li.innerHTML = '<span class="task-num">' + String(i+1).padStart(2,'0') + '</span><span class="task-text">' + t + '</span>';
+      ul.appendChild(li);
+    });
+    panel.appendChild(ul);
+
+    renderNotes(sp, panel);
+
+    window.scrollTo(0,0);
+  }
+
+  selectSprint(0);
+
+})();
+</script>
+</body>
+</html>
