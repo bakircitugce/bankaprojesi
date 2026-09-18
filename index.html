@@ -54,6 +54,12 @@
     line-height: 1.55;
     -webkit-font-smoothing: antialiased;
   }
+  :root[data-theme="light"] body {
+    background:
+      radial-gradient(ellipse 900px 500px at 20% 0%, rgba(180,170,230,0.20) 0%, transparent 60%),
+      linear-gradient(180deg, #FFFFFF 0%, #F7F7FA 100%);
+    background-attachment: fixed;
+  }
 
   /* ---------- Header ---------- */
   header.top {
@@ -90,6 +96,15 @@
     padding: 6px 12px;
     white-space: nowrap;
   }
+
+  .theme-toggle {
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.08em;
+    color: var(--ink-soft); background: transparent;
+    border: 1px solid var(--line-strong); border-radius: var(--radius);
+    padding: 7px 12px; cursor: pointer; white-space: nowrap;
+    transition: background .12s ease, color .12s ease, border-color .12s ease;
+  }
+  .theme-toggle:hover { background: var(--bg-sunken); color: var(--ink); border-color: var(--accent); }
 
   /* ---------- Layout ---------- */
   .layout {
@@ -270,7 +285,10 @@
     <span class="eyebrow">SÜREÇ OTOMASYONU YOL HARİTASI</span>
     <h1>Banka Mutabakatı Agent Projesi</h1>
   </div>
-  <span class="sub" id="progressLabel"></span>
+  <div style="display:flex; align-items:center; gap:12px;">
+    <button type="button" id="themeToggle" class="theme-toggle" aria-label="Tema değiştir"></button>
+    <span class="sub" id="progressLabel"></span>
+  </div>
 </header>
 
 <div class="layout">
@@ -283,6 +301,30 @@
 
 <script>
 (function(){
+
+  var THEME_KEY = 'mutabakat-agent-theme';
+  var themeBtn = document.getElementById('themeToggle');
+
+  function applyTheme(mode){
+    if (mode === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      themeBtn.textContent = '● KOYU TEMA';
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+      themeBtn.textContent = '○ AÇIK TEMA';
+    }
+  }
+
+  var savedTheme = null;
+  try { savedTheme = localStorage.getItem(THEME_KEY); } catch(e){}
+  applyTheme(savedTheme === 'light' ? 'light' : 'dark');
+
+  themeBtn.addEventListener('click', function(){
+    var current = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+    var next = current === 'light' ? 'dark' : 'light';
+    applyTheme(next);
+    try { localStorage.setItem(THEME_KEY, next); } catch(e){}
+  });
 
   var SPRINTS = [
     {
